@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/pageStyles.css" />
+    <link rel="stylesheet" href="css/panelStyles.css" />
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/DisplayPanel.js"></script>
+    <script type="text/javascript" src="js/contentGeneration.js"></script>
+  </head>
+
+  <body>
+    <div class="contentContainer">
+      <div id="display1" class="panelContainer panelBorder panelTypeText">
+        <div class="textDisplay"></div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    window.addEventListener("load", (event) => {
+      console.log("load");
+      // const intervalID = setInterval(addDisplayContent, 400);
+
+      start();
+    });
+  </script>
+</html>

@@ -1,0 +1,53 @@
+body {
+  font-size: 100%;
+}
+
+.contentContainer {
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#display1 {
+  flex-basis: 60%;
+  margin: 0 2em;
+}
+
+.panelContainer {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: auto;
+
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+  -webkit-transition: opacity 500ms ease-in;
+  -moz-transition: opacity 500ms ease-in;
+  -ms-transition: opacity 500ms ease-in;
+  -o-transition: opacity 500ms ease-in;
+}
+
+.panelContainer .textDisplay {
+  padding: 20px;
+}
+
+.panelContainer.panelBorder {
+  border: 1px solid green;
+}
+
+.panelContainer.show {
+  opacity: 1;
+}
+
+.panelContent {
+  margin: 10px;
+}
+
+p.panelText {
+  color: #25e825;
+  font-size: 1.2em;
+  font-family: "Courier New", Courier, monospace;
+  margin: 10px 0;
+}

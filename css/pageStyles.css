@@ -1,0 +1,12 @@
+body {
+  background-color: #000;
+  height: 100vh;
+}
+
+.mainContainer {
+  max-width: 60%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000;
+  margin: 0 auto;
+}
