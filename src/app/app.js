@@ -1,5 +1,6 @@
-const panelManager = new PanelManager();
+import PanelManager from "./managers/panelManager.js";
 
-function start() {
+export const run = () => {
+  const panelManager = new PanelManager();
   panelManager.start();
-}
+};

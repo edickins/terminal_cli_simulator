@@ -1,1 +1,2 @@
-alert("hello from webpack!");
+import { run } from "./app/app.js";
+run();

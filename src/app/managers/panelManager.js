@@ -1,7 +1,11 @@
-function PanelManager() {
-  const DISPLAY_PANELS = [];
+import DisplayPanel from "../displayPanels/DisplayPanel.js";
 
-  function findPanelsInPage() {
+export default class PanelManager {
+  constructor() {
+    this.DISPLAY_PANELS = [];
+  }
+
+  findPanelsInPage() {
     console.log("findPanelsInPage");
     let panels = document.getElementsByClassName("panelContainer");
     return Array.prototype.filter.call(panels, function (panelElement) {
@@ -9,21 +13,22 @@ function PanelManager() {
     });
   }
 
-  function addDisplayPanels(displayPanels) {
+  addDisplayPanels(displayPanels) {
+    const panels = [];
     if (displayPanels && displayPanels.length > 0) {
       displayPanels.forEach(function addPanel(value, index, array) {
-        DISPLAY_PANELS.push(new DisplayPanel(value));
+        panels.push(new DisplayPanel(value));
       });
     }
+
+    return panels;
   }
 
-  return {
-    start: function () {
-      const displayPanels = findPanelsInPage();
-      addDisplayPanels(displayPanels);
-      DISPLAY_PANELS.forEach(function startPanel(panel, index, array) {
-        panel.start();
-      });
-    },
-  };
+  start() {
+    const displayPanels = this.findPanelsInPage();
+    this.DISPLAY_PANELS = this.addDisplayPanels(displayPanels);
+    this.DISPLAY_PANELS.forEach(function startPanel(panel, index, array) {
+      panel.start();
+    });
+  }
 }
