@@ -1,3 +1,5 @@
+// TODO: currently this is a class for displaying text it needs to be turned into a more abstrace class for all panels
+
 function DisplayPanel(div) {
   let rawDisplayText = [];
   const containerDiv = div;
@@ -6,14 +8,7 @@ function DisplayPanel(div) {
   let intervalID = -1;
   let self = this;
 
-  this.start = function start() {
-    this.show();
-    this.createTempTextContent();
-
-    intervalID = setInterval(this.displayText, 2500);
-  };
-
-  this.displayText = function displayText() {
+  displayText = function displayText() {
     const pObj = rawDisplayText[currentTextIndex];
     textContainerDiv.insertAdjacentHTML("beforeend", pObj);
     if (textContainerDiv.clientHeight > containerDiv.clientHeight) {
@@ -21,7 +16,7 @@ function DisplayPanel(div) {
       firstChild.parentNode.removeChild(firstChild);
     }
 
-    //TODO this updates the display to move the innerHTML up the screen by the height of the display div
+    //this updates the display to move the innerHTML up the screen by the height of the display div
     textContainerDiv.scrollTop = textContainerDiv.scrollHeight;
 
     currentTextIndex++;
@@ -30,8 +25,10 @@ function DisplayPanel(div) {
     }
   };
 
-  this.createTempTextContent = function createTempContent() {
+  createTempTextContent = function createTempContent() {
     rawDisplayText = [];
+    const fn = this.displayText;
+
     //const url = "http://local.cdn.bleepbloop.net:3000/content/text/markov/";
     const url =
       "https://peaceful-escarpment-82255.herokuapp.com/content/text/markov/";
@@ -41,18 +38,27 @@ function DisplayPanel(div) {
         return response.json();
       })
       .then(function getQuote(data) {
+        let tempArray = [];
         const quotes = data.items;
         quotes.forEach(function (value, index, array) {
           let output = '<p class="panelText">' + value.txt + "</p>";
           rawDisplayText.push(output);
         });
+        intervalID = setInterval(fn, 2500);
       })
       .catch(function (error) {
-        console.log(err);
+        console.log(error);
       });
   };
 
-  this.show = function show() {
-    containerDiv.classList.toggle("show");
+  // expose public methods of DisplayPanel
+  return {
+    start: function start() {
+      createTempTextContent();
+      this.show();
+    },
+    show: function show() {
+      containerDiv.classList.toggle("show");
+    },
   };
 }

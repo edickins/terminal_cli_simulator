@@ -1,0 +1,24 @@
+{
+  "name": "git",
+  "version": "1.0.0",
+  "description": "html/css/js experiment to generate computer interface displays",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edickins/terminal_cli_simulator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edickins/terminal_cli_simulator/issues"
+  },
+  "homepage": "https://github.com/edickins/terminal_cli_simulator#readme",
+  "devDependencies": {
+    "webpack": "^5.5.1",
+    "webpack-cli": "^4.2.0"
+  }
+}
