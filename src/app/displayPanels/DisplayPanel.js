@@ -9,6 +9,14 @@ export default class DisplayPanel {
     this.currentTextIndex = 0;
     this.intervalID = -1;
     this.self = this;
+
+    //const serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
+    this.serverURI = "http://local.cdn.bleepbloop.net:3000";
+
+    this.endPointURLs = {
+      markov: "/content/text/markov/",
+      ascii: "/content/text/ascii/",
+    };
   }
 
   displayText() {
@@ -22,7 +30,7 @@ export default class DisplayPanel {
   checkGetNewCDNContent() {
     this.currentTextIndex++;
     if (this.currentTextIndex >= this.cdnContent.length) {
-      this.createTempTextContent();
+      this.getTextFromCDN("markov");
       this.currentTextIndex = 0;
     }
   }
@@ -39,15 +47,13 @@ export default class DisplayPanel {
     this.textContainerDiv.scrollTop = this.textContainerDiv.scrollHeight;
   }
 
-  createTempTextContent() {
+  getTextFromCDN(endPoint) {
+    const url = this.serverURI + this.endPointURLs[endPoint];
+
     clearInterval(this.intervalID);
     this.intervalID = -1;
     this.cdnContent = [];
     const scope = this;
-
-    //const url = "http://local.cdn.bleepbloop.net:3000/content/text/markov/";
-    const url =
-      "https://peaceful-escarpment-82255.herokuapp.com/content/text/markov/";
 
     fetch(url)
       .then(function parseResponse(response) {
@@ -82,7 +88,7 @@ export default class DisplayPanel {
 
   // expose public methods of DisplayPanel
   start() {
-    this.createTempTextContent();
+    this.getTextFromCDN("ascii");
     this.show();
   }
 
