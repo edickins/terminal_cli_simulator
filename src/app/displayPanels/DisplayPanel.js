@@ -1,8 +1,9 @@
 // TODO: currently this is a class for displaying text it needs to be turned into a more abstrace class for all panels
-
+import TextFormatter from "../formatters/textFormatter.js";
 export default class DisplayPanel {
   constructor(div) {
     this.cdnContent = [];
+    this.textFormattingClasses = ["panelText"];
     this.containerDiv = div;
     this.textContainerDiv = this.containerDiv.childNodes[1];
     this.currentTextIndex = 0;
@@ -39,6 +40,8 @@ export default class DisplayPanel {
   }
 
   createTempTextContent() {
+    clearInterval(this.intervalID);
+    this.intervalID = -1;
     this.cdnContent = [];
     const scope = this;
 
@@ -61,13 +64,20 @@ export default class DisplayPanel {
   processCDNContent(data) {
     const quotes = data.items;
     const tempArray = [];
+    const formatter = new TextFormatter();
+    const formatterObj = {
+      classes: this.textFormattingClasses,
+    };
     quotes.forEach(function (value, index, array) {
-      let output = '<p class="panelText">' + value.txt + "</p>";
-      tempArray.push(output);
+      debugger;
+      let formattedText = formatter.formatText.call(value, formatterObj);
+      tempArray.push(formattedText);
     });
 
     this.cdnContent = tempArray;
-    setInterval(() => this.displayText(), 100);
+    if (this.intervalID == -1) {
+      this.intervalID = setInterval(() => this.displayText(), 1000);
+    }
   }
 
   // expose public methods of DisplayPanel
