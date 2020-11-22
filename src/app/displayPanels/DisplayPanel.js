@@ -10,6 +10,18 @@ export default class DisplayPanel {
     this.intervalID = -1;
     this.self = this;
 
+    this.formatterAscii = {
+      classes: this.textFormattingClasses.concat(["pre"]),
+      element: "pre",
+    };
+
+    this.formatterRegular = {
+      classes: this.textFormattingClasses,
+      element: "p",
+    };
+
+    this.formatterObj = this.formatterAscii;
+
     //const serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
     this.serverURI = "http://local.cdn.bleepbloop.net:3000";
 
@@ -32,6 +44,7 @@ export default class DisplayPanel {
     if (this.currentTextIndex >= this.cdnContent.length) {
       this.getTextFromCDN("markov");
       this.currentTextIndex = 0;
+      clearInterval(this.intervalID);
     }
   }
 
@@ -71,17 +84,15 @@ export default class DisplayPanel {
     const quotes = data.items;
     const tempArray = [];
     const formatter = new TextFormatter();
-    const formatterObj = {
-      classes: this.textFormattingClasses,
-    };
+    const formatterObj = this.formatterObj;
     quotes.forEach(function (value, index, array) {
-      debugger;
       let formattedText = formatter.formatText.call(value, formatterObj);
       tempArray.push(formattedText);
     });
 
     this.cdnContent = tempArray;
     if (this.intervalID == -1) {
+      this.formatterObj = this.formatterRegular;
       this.intervalID = setInterval(() => this.displayText(), 1000);
     }
   }

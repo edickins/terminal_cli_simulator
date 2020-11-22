@@ -6,7 +6,6 @@ export default class PanelManager {
   }
 
   findPanelsInPage() {
-    console.log("findPanelsInPage");
     let panels = document.getElementsByClassName("panelContainer");
     return Array.prototype.filter.call(panels, function (panelElement) {
       return panelElement.nodeName === "DIV";

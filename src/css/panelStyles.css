@@ -46,8 +46,17 @@ body {
 }
 
 p.panelText {
+  font-size: 1.1em;
+}
+
+p.panelText,
+pre.panelText {
   color: #25e825;
-  font-size: 1.2em;
+
   font-family: "Courier New", Courier, monospace;
   margin: 10px 0;
+}
+
+pre.panelText {
+  font-size: 0.7em;
 }

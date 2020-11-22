@@ -3,7 +3,7 @@ export default class TextFormatter {
 
   formatText(configObj) {
     let classes = configObj.classes;
-    let returnStr = "<p";
+    let returnStr = "<" + configObj.element;
     if (classes && classes.length > 0) {
       returnStr += " class='";
       classes.forEach(function (classToApply) {
@@ -14,7 +14,7 @@ export default class TextFormatter {
 
     returnStr += ">";
     returnStr += this.txt;
-    returnStr += "</p>";
+    returnStr += "</>";
 
     return returnStr;
   }
