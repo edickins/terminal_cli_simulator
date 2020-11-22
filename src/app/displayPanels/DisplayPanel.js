@@ -1,4 +1,6 @@
 // TODO: currently this is a class for displaying text it needs to be turned into a more abstrace class for all panels
+// TODO: add a panel display controller for timing functions so these are no in the main class.
+// TODO: add a content manager to get content from the CDN so it is not inside the main class.
 import TextFormatter from "../formatters/textFormatter.js";
 export default class DisplayPanel {
   constructor(div) {
