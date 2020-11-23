@@ -4,7 +4,7 @@ module.exports = {
   entry: "./src/index.js",
   devtool: "inline-source-map",
   output: {
-    filename: "main.js",
+    filename: "main.[contentHash].js",
     path: path.resolve(__dirname, "dist"),
   },
   module: {
