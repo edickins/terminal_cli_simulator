@@ -15,24 +15,25 @@ export default class DisplayPanel {
     this.intervalID = -1;
     this.self = this;
 
-    this.formatterAscii = {
-      classes: this.textFormattingClasses.concat(["pre"]),
-      element: "pre",
-    };
-
-    this.formatterRegular = {
-      classes: this.textFormattingClasses,
-      element: "p",
-    };
-
-    this.formatterObj = this.formatterAscii;
-
     //const serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
     this.serverURI = "http://local.cdn.bleepbloop.net:3000";
 
+    // containing endpoints to the CDN
     this.endPointURLs = {
       markov: "/content/text/markov/",
       ascii: "/content/text/ascii/",
+    };
+
+    // containing Array of classes and element name for formatting
+    this.formatterObjs = {
+      markov: {
+        classes: this.textFormattingClasses,
+        element: "p",
+      },
+      ascii: {
+        classes: this.textFormattingClasses,
+        element: "pre",
+      },
     };
   }
 
@@ -65,51 +66,58 @@ export default class DisplayPanel {
     this.textContainerDiv.scrollTop = this.textContainerDiv.scrollHeight;
   }
 
-  getTextFromCDN(endPoint) {
+  async getTextFromCDN(endPoint) {
     const url = this.serverURI + this.endPointURLs[endPoint];
-
+    const formatterObj = this.formatterObjs[endPoint];
     clearInterval(this.intervalID);
     this.intervalID = -1;
     this.cdnContent = [];
-    const scope = this;
 
-    fetch(url)
-      .then(function parseResponse(response) {
-        return response.json();
-      })
-      .then(function createPanelText(data) {
-        scope.processCDNContent(data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    try {
+      const response = await fetch(url);
+      if (response.status === 200) {
+        const data = await response.json();
+        this.cdnContent = this.processCDNContent(data, formatterObj);
+
+        if (this.intervalID == -1) {
+          this.intervalID = setInterval(() => this.displayText(), 1000);
+        }
+
+        this.show();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  processCDNContent(data) {
-    const quotes = data.items;
+  processCDNContent(data, formatterObj) {
+    const items = data.items;
     const tempArray = [];
     const formatter = new TextFormatter();
-    const formatterObj = this.formatterObj;
-    quotes.forEach(function (value, index, array) {
+
+    items.forEach(function (value) {
       let formattedText = formatter.formatText.call(value, formatterObj);
       tempArray.push(formattedText);
     });
 
-    this.cdnContent = tempArray;
-    if (this.intervalID == -1) {
-      this.formatterObj = this.formatterRegular;
-      this.intervalID = setInterval(() => this.displayText(), 1000);
-    }
+    return tempArray;
   }
 
   // expose public methods of DisplayPanel
   start() {
     console.log("DisplayPanel:start");
     this.getTextFromCDN("ascii");
-    this.show();
   }
 
   show() {
-    this.containerDiv.classList.toggle("show");
+    if (!this.containerDiv.classList.contains("show")) {
+      this.containerDiv.classList.toggle("show");
+    }
+  }
+
+  hide() {
+    if (this.containerDiv.classList.contains("show")) {
+      this.containerDiv.classList.toggle("show");
+    }
   }
 }
