@@ -4,10 +4,13 @@
 import TextFormatter from "../formatters/textFormatter.js";
 export default class DisplayPanel {
   constructor(div) {
+    console.log("DisplayPanel constructor");
     this.cdnContent = [];
     this.textFormattingClasses = ["panelText"];
     this.containerDiv = div;
-    this.textContainerDiv = this.containerDiv.childNodes[1];
+    this.textContainerDiv = this.containerDiv.getElementsByClassName(
+      "textDisplay"
+    )[0];
     this.currentTextIndex = 0;
     this.intervalID = -1;
     this.self = this;
@@ -101,6 +104,7 @@ export default class DisplayPanel {
 
   // expose public methods of DisplayPanel
   start() {
+    console.log("DisplayPanel:start");
     this.getTextFromCDN("ascii");
     this.show();
   }
