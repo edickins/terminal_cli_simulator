@@ -2,11 +2,12 @@
 // TODO: add a panel display controller for timing functions so these are no in the main class.
 // TODO: add a content manager to get content from the CDN so it is not inside the main class.
 import TextFormatter from "../formatters/textFormatter.js";
+import typingEffect from "typing-effect";
 export default class DisplayPanel {
   constructor(div) {
     console.log("DisplayPanel constructor");
     this.cdnContent = [];
-    this.textFormattingClasses = ["panelText"];
+    this.textFormattingClasses = ["panelText", "[data-typing-effect]"];
     this.containerDiv = div;
     this.textContainerDiv = this.containerDiv.getElementsByClassName(
       "textDisplay"
@@ -20,8 +21,8 @@ export default class DisplayPanel {
 
     // containing endpoints to the CDN
     this.endPointURLs = {
-      markov: "/content/text/markov/",
-      ascii: "/content/text/ascii/",
+      markov: "/text/markov/",
+      ascii: "/text/ascii/",
     };
 
     // containing Array of classes and element name for formatting
@@ -40,6 +41,8 @@ export default class DisplayPanel {
   displayText() {
     const initObj = this.cdnContent[this.currentTextIndex];
     this.textContainerDiv.insertAdjacentHTML("beforeend", initObj);
+    const lastElement = this.textContainerDiv.lastChild;
+    typingEffect(lastElement);
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
     this.checkGetNewCDNContent();

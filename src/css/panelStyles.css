@@ -60,3 +60,7 @@ pre.panelText {
 pre.panelText {
   font-size: 0.7em;
 }
+
+[data-typing-effect] {
+  visibility: hidden;
+}
