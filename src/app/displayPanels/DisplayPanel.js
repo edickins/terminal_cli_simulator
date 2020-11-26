@@ -7,6 +7,7 @@ export default class DisplayPanel {
   constructor(div) {
     console.log("DisplayPanel constructor");
     this.cdnContent = [];
+    this.typeEffectElements = [];
     this.textFormattingClasses = ["panelText"];
     this.containerDiv = div;
     this.textContainerDiv = this.containerDiv.getElementsByClassName(
@@ -46,30 +47,49 @@ export default class DisplayPanel {
   }
 
   displayText() {
-    const containerDiv = this.textContainerDiv;
-    const typeEffectElements = [];
-    this.cdnContent.forEach(function (item) {
-      containerDiv.insertAdjacentHTML("beforeend", item);
-      const lastElement = containerDiv.lastChild;
-      if (lastElement.classList.contains("[data-typing-effect]")) {
-        typeEffectElements.push(lastElement);
+    if (this.cdnContent.length > 0) {
+      const item = this.cdnContent.shift();
+      if (item.indexOf("[data-typing-effect]") == -1) {
+        this.addStaticTextItem(item);
+      } else {
+        this.addTypeItem(item);
       }
-    });
-
-    if (typeEffectElements.length > 0) {
-      typingEffect(Array.from(typeEffectElements)).then(() => {
-        this.doSomething();
-      });
     } else {
-      this.getTextFromCDN("markov");
+      if (this.typeEffectElements.length > 0) {
+        this.showTypeEffectElements();
+      } else {
+        this.getTextFromCDN("markov");
+      }
     }
   }
 
-  doSomething() {
-    console.log("doing something");
+  showTypeEffectElements() {
+    typingEffect(Array.from(this.typeEffectElements), { reset: true }).then(
+      () => {
+        this.getTextFromCDN("markov");
+      }
+    );
+  }
+
+  addTypeItem(item) {
+    this.textContainerDiv.insertAdjacentHTML("beforeend", item);
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
-    this.checkGetNewCDNContent();
+    const lastElement = this.textContainerDiv.lastChild;
+    this.typeEffectElements.push(lastElement);
+    this.displayText();
+  }
+
+  addStaticTextItem(item) {
+    this.textContainerDiv.insertAdjacentHTML("beforeend", item);
+    this.checkCullTextItems();
+    this.updateDisplayScrollPosition();
+    this.displayText();
+  }
+
+  doSomething() {
+    this.checkCullTextItems();
+    this.updateDisplayScrollPosition();
   }
 
   checkGetNewCDNContent() {
