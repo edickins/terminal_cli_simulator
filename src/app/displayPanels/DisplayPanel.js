@@ -46,28 +46,34 @@ export default class DisplayPanel {
   }
 
   displayText() {
-    const initObj = this.cdnContent[this.currentTextIndex];
-    this.textContainerDiv.insertAdjacentHTML("beforeend", initObj);
-    const lastElement = this.textContainerDiv.lastChild;
-    if (lastElement.classList.contains("[data-typing-effect]")) {
-      typingEffect(lastElement).then(() => this.doSomething());
+    const containerDiv = this.textContainerDiv;
+    const typeEffectElements = [];
+    this.cdnContent.forEach(function (item) {
+      containerDiv.insertAdjacentHTML("beforeend", item);
+      const lastElement = containerDiv.lastChild;
+      if (lastElement.classList.contains("[data-typing-effect]")) {
+        typeEffectElements.push(lastElement);
+      }
+    });
+
+    if (typeEffectElements.length > 0) {
+      typingEffect(Array.from(typeEffectElements)).then(() => {
+        this.doSomething();
+      });
+    } else {
+      this.getTextFromCDN("markov");
     }
+  }
+
+  doSomething() {
+    console.log("doing something");
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
     this.checkGetNewCDNContent();
   }
 
-  doSomething() {
-    console.log("doing something");
-  }
-
   checkGetNewCDNContent() {
-    this.currentTextIndex++;
-    if (this.currentTextIndex >= this.cdnContent.length) {
-      this.getTextFromCDN("markov");
-      this.currentTextIndex = 0;
-      clearInterval(this.intervalID);
-    }
+    this.getTextFromCDN("markov");
   }
 
   checkCullTextItems() {
@@ -95,11 +101,7 @@ export default class DisplayPanel {
       if (response.status === 200) {
         const data = await response.json();
         this.cdnContent = this.processCDNContent(data, formatterObj);
-
-        if (this.intervalID == -1) {
-          this.intervalID = setInterval(() => this.displayText(), 1000);
-        }
-
+        this.displayText();
         this.show();
       }
     } catch (error) {
