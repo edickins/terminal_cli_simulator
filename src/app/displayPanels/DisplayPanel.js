@@ -7,7 +7,7 @@ export default class DisplayPanel {
   constructor(div) {
     console.log("DisplayPanel constructor");
     this.cdnContent = [];
-    this.textFormattingClasses = ["panelText", "[data-typing-effect]"];
+    this.textFormattingClasses = ["panelText"];
     this.containerDiv = div;
     this.textContainerDiv = this.containerDiv.getElementsByClassName(
       "textDisplay"
@@ -25,10 +25,14 @@ export default class DisplayPanel {
       ascii: "/text/ascii/",
     };
 
+    // clone formatting classes to add type-effect to it
+    const clone = [].concat(this.textFormattingClasses);
+    clone.push("[data-typing-effect]");
+
     // containing Array of classes and element name for formatting
     this.formatterObjs = {
       markov: {
-        classes: this.textFormattingClasses,
+        classes: clone,
         element: "p",
       },
       ascii: {
@@ -36,16 +40,25 @@ export default class DisplayPanel {
         element: "pre",
       },
     };
+
+    // add type-effect to Markov generated text content
+    this.formatterObjs.markov.classes.push("[data-typing-effect]");
   }
 
   displayText() {
     const initObj = this.cdnContent[this.currentTextIndex];
     this.textContainerDiv.insertAdjacentHTML("beforeend", initObj);
     const lastElement = this.textContainerDiv.lastChild;
-    typingEffect(lastElement);
+    if (lastElement.classList.contains("[data-typing-effect]")) {
+      typingEffect(lastElement).then(() => this.doSomething());
+    }
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
     this.checkGetNewCDNContent();
+  }
+
+  doSomething() {
+    console.log("doing something");
   }
 
   checkGetNewCDNContent() {
@@ -72,6 +85,7 @@ export default class DisplayPanel {
   async getTextFromCDN(endPoint) {
     const url = this.serverURI + this.endPointURLs[endPoint];
     const formatterObj = this.formatterObjs[endPoint];
+
     clearInterval(this.intervalID);
     this.intervalID = -1;
     this.cdnContent = [];
