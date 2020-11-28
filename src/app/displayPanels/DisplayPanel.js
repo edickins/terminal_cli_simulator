@@ -18,7 +18,8 @@ export default class DisplayPanel {
     this.self = this;
 
     //const serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
-    this.serverURI = "http://local.cdn.bleepbloop.net:3000";
+    //this.serverURI = "http://local.cdn.bleepbloop.net:3000";
+    this.serverURI = "https://cdn.bleepbloop.net/content";
 
     // containing endpoints to the CDN
     this.endPointURLs = {
