@@ -71,8 +71,7 @@ export default class DisplayPanel {
   addTypeItem() {
     const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
-    this.checkCullTextItems();
-    this.updateDisplayScrollPosition();
+    this.refreshLayout();
     const lastElement = this.textContainerDiv.lastChild;
     typingEffect(lastElement, { reset: true }).then(() => {
       this.displayText();
@@ -82,12 +81,11 @@ export default class DisplayPanel {
   addStaticTextItem() {
     const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
-    this.checkCullTextItems();
-    this.updateDisplayScrollPosition();
+    this.refreshLayout();
     this.displayText();
   }
 
-  doSomething() {
+  refreshLayout() {
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
   }
@@ -98,9 +96,20 @@ export default class DisplayPanel {
 
   checkCullTextItems() {
     const childNodesArray = Array.from(this.textContainerDiv.childNodes);
+    const textContainer = this.textContainerDiv;
+    const parentDiv = this.containerDiv;
+    console.log("parentDiv height " + parentDiv.scrollHeight);
+    console.log("textContainerDiv height " + textContainer.scrollHeight);
+
+    while (
+      this.textContainerDiv.scrollHeight > this.containerDiv.scrollHeight
+    ) {
+      const firstChild = childNodesArray.shift();
+      firstChild.parentNode.removeChild(firstChild);
+    }
+
     if (childNodesArray.length > 0) {
       childNodesArray.forEach(function cullItems(item, index, array) {
-        console.log(item.offsetTop);
         //firstChild.parentNode.removeChild(firstChild);
       });
     }
