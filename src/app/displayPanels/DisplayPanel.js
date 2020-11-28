@@ -48,18 +48,14 @@ export default class DisplayPanel {
 
   displayText() {
     if (this.cdnContent.length > 0) {
-      const item = this.cdnContent.shift();
-      if (item.indexOf("[data-typing-effect]") == -1) {
-        this.addStaticTextItem(item);
+      const item = this.cdnContent[0];
+      if (item.indexOf("[data-typing-effect]") > -1) {
+        this.addTypeItem();
       } else {
-        this.addTypeItem(item);
+        this.addStaticTextItem();
       }
     } else {
-      if (this.typeEffectElements.length > 0) {
-        this.showTypeEffectElements();
-      } else {
-        this.getTextFromCDN("markov");
-      }
+      this.getTextFromCDN("markov");
     }
   }
 
@@ -71,16 +67,19 @@ export default class DisplayPanel {
     );
   }
 
-  addTypeItem(item) {
+  addTypeItem() {
+    const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
     const lastElement = this.textContainerDiv.lastChild;
-    this.typeEffectElements.push(lastElement);
-    this.displayText();
+    typingEffect(lastElement, { reset: true }).then(() => {
+      this.displayText();
+    });
   }
 
-  addStaticTextItem(item) {
+  addStaticTextItem() {
+    const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
@@ -97,9 +96,12 @@ export default class DisplayPanel {
   }
 
   checkCullTextItems() {
-    if (this.textContainerDiv.clientHeight > this.containerDiv.clientHeight) {
-      let firstChild = this.textContainerDiv.firstChild;
-      firstChild.parentNode.removeChild(firstChild);
+    const childNodesArray = Array.from(this.textContainerDiv.childNodes);
+    if (childNodesArray.length > 0) {
+      childNodesArray.forEach(function cullItems(item, index, array) {
+        console.log(item.offsetTop);
+        //firstChild.parentNode.removeChild(firstChild);
+      });
     }
   }
 

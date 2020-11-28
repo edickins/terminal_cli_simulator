@@ -30,7 +30,10 @@ body {
 }
 
 .panelContainer .textDisplay {
-  padding: 20px;
+  border: 20px solid black;
+  overflow: hidden;
+  max-height: 103%;
+  box-sizing: border-box;
 }
 
 .panelContainer.panelBorder {
