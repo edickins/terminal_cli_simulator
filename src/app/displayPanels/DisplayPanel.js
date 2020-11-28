@@ -13,11 +13,8 @@ export default class DisplayPanel {
     this.textContainerDiv = this.containerDiv.getElementsByClassName(
       "textDisplay"
     )[0];
-    this.currentTextIndex = 0;
-    this.intervalID = -1;
-    this.self = this;
 
-    //const serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
+    //this.serverURI = "https://peaceful-escarpment-82255.herokuapp.com"
     //this.serverURI = "http://local.cdn.bleepbloop.net:3000";
     this.serverURI = "https://cdn.bleepbloop.net/content";
 
@@ -56,18 +53,15 @@ export default class DisplayPanel {
         this.addStaticTextItem();
       }
     } else {
-      this.getTextFromCDN("markov");
+      // all content displayed so get some more
+      const contentSource = Math.random() > 0.9 ? "ascii" : "markov";
+      this.getTextFromCDN(contentSource);
     }
   }
 
-  showTypeEffectElements() {
-    typingEffect(Array.from(this.typeEffectElements), { reset: true }).then(
-      () => {
-        this.getTextFromCDN("markov");
-      }
-    );
-  }
-
+  /*
+  add an item that will be displayed using type-effect animation
+  */
   addTypeItem() {
     const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
@@ -78,6 +72,9 @@ export default class DisplayPanel {
     });
   }
 
+  /*
+  add a piece of static text
+  */
   addStaticTextItem() {
     const item = this.cdnContent.shift();
     this.textContainerDiv.insertAdjacentHTML("beforeend", item);
@@ -98,20 +95,12 @@ export default class DisplayPanel {
     const childNodesArray = Array.from(this.textContainerDiv.childNodes);
     const textContainer = this.textContainerDiv;
     const parentDiv = this.containerDiv;
-    console.log("parentDiv height " + parentDiv.scrollHeight);
-    console.log("textContainerDiv height " + textContainer.scrollHeight);
 
     while (
       this.textContainerDiv.scrollHeight > this.containerDiv.scrollHeight
     ) {
       const firstChild = childNodesArray.shift();
       firstChild.parentNode.removeChild(firstChild);
-    }
-
-    if (childNodesArray.length > 0) {
-      childNodesArray.forEach(function cullItems(item, index, array) {
-        //firstChild.parentNode.removeChild(firstChild);
-      });
     }
   }
 
@@ -120,12 +109,13 @@ export default class DisplayPanel {
     this.textContainerDiv.scrollTop = this.textContainerDiv.scrollHeight;
   }
 
+  /*
+  async function getting data from endpoint using await
+  */
   async getTextFromCDN(endPoint) {
     const url = this.serverURI + this.endPointURLs[endPoint];
     const formatterObj = this.formatterObjs[endPoint];
 
-    clearInterval(this.intervalID);
-    this.intervalID = -1;
     this.cdnContent = [];
 
     try {
@@ -141,6 +131,10 @@ export default class DisplayPanel {
     }
   }
 
+  /*
+  format text using a formatter object
+  in this case content is inserted into a String representing the HTML element(s) required for that text item
+  */
   processCDNContent(data, formatterObj) {
     const items = data.items;
     const tempArray = [];
