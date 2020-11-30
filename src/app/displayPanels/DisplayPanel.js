@@ -27,11 +27,11 @@ export default class DisplayPanel {
     // containing Array of classes and element name for formatting
     this.formatterObjs = {
       markov: {
-        classes: [].concat(this.textFormattingClasses),
+        classes: Array.from(this.textFormattingClasses),
         element: "p",
       },
       ascii: {
-        classes: [].concat(this.textFormattingClasses),
+        classes: Array.from(this.textFormattingClasses),
         element: "pre",
       },
     };
@@ -59,9 +59,7 @@ export default class DisplayPanel {
   add an item that will be displayed using type-effect animation
   */
   addTypeItem() {
-    const item = this.cdnContent.shift();
-    this.textContainerDiv.insertAdjacentHTML("beforeend", item);
-    this.refreshLayout();
+    this.addItem("beforeend");
     const lastElement = this.textContainerDiv.lastChild;
     typingEffect(lastElement, { reset: true }).then(() => {
       this.displayText();
@@ -72,10 +70,14 @@ export default class DisplayPanel {
   add a piece of static text
   */
   addStaticTextItem() {
-    const item = this.cdnContent.shift();
-    this.textContainerDiv.insertAdjacentHTML("beforeend", item);
-    this.refreshLayout();
+    this.addItem("beforeend");
     this.displayText();
+  }
+
+  addItem(position) {
+    const item = this.cdnContent.shift();
+    this.textContainerDiv.insertAdjacentHTML(position, item);
+    this.refreshLayout();
   }
 
   refreshLayout() {
