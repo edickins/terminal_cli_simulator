@@ -67,3 +67,9 @@ pre.panelText {
 [data-typing-effect] {
   visibility: hidden;
 }
+
+@media (max-width: 800px) {
+  pre.panelText {
+    font-size: 0.4em;
+  }
+}

@@ -24,18 +24,14 @@ export default class DisplayPanel {
       ascii: "/text/ascii/",
     };
 
-    // clone formatting classes to add type-effect to it
-    const clone = [].concat(this.textFormattingClasses);
-    clone.push("[data-typing-effect]");
-
     // containing Array of classes and element name for formatting
     this.formatterObjs = {
       markov: {
-        classes: clone,
+        classes: [].concat(this.textFormattingClasses),
         element: "p",
       },
       ascii: {
-        classes: this.textFormattingClasses,
+        classes: [].concat(this.textFormattingClasses),
         element: "pre",
       },
     };
