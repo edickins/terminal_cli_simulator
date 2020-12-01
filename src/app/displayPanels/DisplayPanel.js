@@ -2,6 +2,7 @@
 // TODO: add a panel display controller for timing functions so these are no in the main class.
 // TODO: add a content manager to get content from the CDN so it is not inside the main class.
 import TextFormatter from "../formatters/textFormatter.js";
+import TextContentLoader from "../contentLoaders/textContentLoader.js";
 import typingEffect from "typing-effect";
 export default class DisplayPanel {
   constructor(div) {
@@ -38,8 +39,16 @@ export default class DisplayPanel {
 
     // add type-effect to Markov generated text content
     this.formatterObjs.markov.classes.push("[data-typing-effect]");
+
+    this.contentLoader = new TextContentLoader();
+    this.contentLoader.serverURI = this.serverURI;
+    this.contentLoader.endPointURLs = this.endPointURLs;
+    this.contentLoader.formatterObjs = this.formatterObjs;
   }
 
+  /*
+  display a text item using appropriate method for each type of item
+  */
   displayText() {
     if (this.cdnContent.length > 0) {
       const item = this.cdnContent[0];
@@ -52,6 +61,17 @@ export default class DisplayPanel {
       // all content displayed so get some more
       const contentSource = Math.random() > 0.9 ? "ascii" : "markov";
       this.getTextFromCDN(contentSource);
+    }
+  }
+
+  /*
+  add text item to displaylist
+  */
+  addItem(position) {
+    const item = this.cdnContent.shift();
+    if (item) {
+      this.textContainerDiv.insertAdjacentHTML(position, item);
+      this.refreshLayout();
     }
   }
 
@@ -74,12 +94,6 @@ export default class DisplayPanel {
     this.displayText();
   }
 
-  addItem(position) {
-    const item = this.cdnContent.shift();
-    this.textContainerDiv.insertAdjacentHTML(position, item);
-    this.refreshLayout();
-  }
-
   refreshLayout() {
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
@@ -91,9 +105,6 @@ export default class DisplayPanel {
 
   checkCullTextItems() {
     const childNodesArray = Array.from(this.textContainerDiv.childNodes);
-    const textContainer = this.textContainerDiv;
-    const parentDiv = this.containerDiv;
-
     while (
       this.textContainerDiv.scrollHeight > this.containerDiv.scrollHeight
     ) {
@@ -111,39 +122,9 @@ export default class DisplayPanel {
   async function getting data from endpoint using await
   */
   async getTextFromCDN(endPoint) {
-    const url = this.serverURI + this.endPointURLs[endPoint];
-    const formatterObj = this.formatterObjs[endPoint];
-
-    this.cdnContent = [];
-
-    try {
-      const response = await fetch(url);
-      if (response.status === 200) {
-        const data = await response.json();
-        this.cdnContent = this.processCDNContent(data, formatterObj);
-        this.displayText();
-        this.show();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  /*
-  format text using a formatter object
-  in this case content is inserted into a String representing the HTML element(s) required for that text item
-  */
-  processCDNContent(data, formatterObj) {
-    const items = data.items;
-    const tempArray = [];
-    const formatter = new TextFormatter();
-
-    items.forEach(function (value) {
-      let formattedText = formatter.formatText.call(value, formatterObj);
-      tempArray.push(formattedText);
-    });
-
-    return tempArray;
+    this.cdnContent = await this.contentLoader.getTextFromCDN(endPoint);
+    this.displayText();
+    this.show();
   }
 
   // expose public methods of DisplayPanel
