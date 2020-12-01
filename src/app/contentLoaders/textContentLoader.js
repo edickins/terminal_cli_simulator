@@ -1,11 +1,16 @@
 import TextFormatter from "../formatters/textFormatter.js";
+/*
+    Wrapper class for a fetch call to the serverURI
+    this TextContentLoader returns an Array of Strings
+    which are used to created HTML content from those strings
+    */
+
 export default class TextContentLoader {
   constructor() {
     this.serverURI = "";
 
     // containing endpoints to the CDN
     this.endPointURLs = {};
-
     this.textFormattingClasses = [];
 
     // containing Array of classes and element name for formatting

@@ -1,7 +1,6 @@
 // TODO: currently this is a class for displaying text it needs to be turned into a more abstrace class for all panels
 // TODO: add a panel display controller for timing functions so these are no in the main class.
 // TODO: add a content manager to get content from the CDN so it is not inside the main class.
-import TextFormatter from "../formatters/textFormatter.js";
 import TextContentLoader from "../contentLoaders/textContentLoader.js";
 import typingEffect from "typing-effect";
 export default class DisplayPanel {
@@ -94,13 +93,17 @@ export default class DisplayPanel {
     this.displayText();
   }
 
+  checkGetNewCDNContent() {
+    this.getTextFromCDN("markov");
+  }
+
+  /*
+    cull items no-longer displayed
+    update position of main text area
+  */
   refreshLayout() {
     this.checkCullTextItems();
     this.updateDisplayScrollPosition();
-  }
-
-  checkGetNewCDNContent() {
-    this.getTextFromCDN("markov");
   }
 
   checkCullTextItems() {
@@ -129,7 +132,6 @@ export default class DisplayPanel {
 
   // expose public methods of DisplayPanel
   start() {
-    console.log("DisplayPanel:start");
     this.getTextFromCDN("ascii");
   }
 
